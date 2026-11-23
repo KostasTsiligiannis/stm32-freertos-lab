@@ -22,8 +22,6 @@ add_compile_options(
     -Wextra
     -ffunction-sections
     -fdata-sections
-    -O0
-    -g3
 )
 
 add_compile_definitions(

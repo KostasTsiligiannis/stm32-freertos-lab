@@ -22,28 +22,20 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y cmake ninja-build gcc-arm-none-eabi libnewlib-arm-none-eabi cppcheck
 
-      - name: Static Code Analysis (Cppcheck)
-        run: |
-          cppcheck --enable=warning,performance,portability --error-exitcode=1 \
-            -Iapp app/led_controller.c tests/test_led_controller.c
+      - name: Run Static Analysis & Off-Target Unit Tests
+        run: ./tools/test_host.sh
 
-      - name: Run Off-Target Unit Tests (Unity)
+      - name: Cross-Compile STM32F303K8 Firmware (Debug & Release)
         run: |
-          mkdir -p build
-          gcc -Wall -Wextra -Werror tests/test_led_controller.c app/led_controller.c third_party/Unity/src/unity.c \
-            -Iapp -Ithird_party/Unity/src -o build/run_tests
-          ./build/run_tests
-
-      - name: Cross-Compile STM32F303K8 Firmware (CMake + Ninja)
-        run: |
-          cmake -B build -G Ninja
-          cmake --build build
+          ./tools/build.sh Debug
+          ./tools/build.sh Release
 
       - name: Upload Firmware Artifacts (.elf, .bin, .hex)
         uses: actions/upload-artifact@v4
         with:
           name: stm32f303-freertos-firmware
           path: |
-            build/*.elf
-            build/*.bin
-            build/*.hex
+            build/Debug/*.elf
+            build/Debug/*.bin
+            build/Release/*.elf
+            build/Release/*.bin

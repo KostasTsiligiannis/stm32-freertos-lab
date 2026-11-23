@@ -1,0 +1,31 @@
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug STM32F303K8",
+            "type": "cortex-debug",
+            "request": "launch",
+
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/Debug/stm32f303-freertos-lab.elf",
+
+            "servertype": "openocd",
+            "serverpath": "${workspaceFolder}/tools/openocd-sudo.sh",
+            "gdbPath": "/usr/bin/gdb-multiarch",
+
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f3x.cfg"
+            ],
+
+            "runToEntryPoint": "main",
+
+            "svdFile": "${workspaceFolder}/tools/STM32F303.svd",
+
+            "preLaunchTask": "CMake Build Firmware",
+
+            "showDevDebugOutput": "raw"
+        }
+    ]
+}
