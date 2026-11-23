@@ -1,0 +1,49 @@
+name: Embedded CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Static Analysis, Unit Tests & STM32 Build
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout Repository & Submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Toolchain & Quality Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build gcc-arm-none-eabi libnewlib-arm-none-eabi cppcheck
+
+      - name: Static Code Analysis (Cppcheck)
+        run: |
+          cppcheck --enable=warning,performance,portability --error-exitcode=1 \
+            -Iapp app/led_controller.c tests/test_led_controller.c
+
+      - name: Run Off-Target Unit Tests (Unity)
+        run: |
+          mkdir -p build
+          gcc -Wall -Wextra -Werror tests/test_led_controller.c app/led_controller.c third_party/Unity/src/unity.c \
+            -Iapp -Ithird_party/Unity/src -o build/run_tests
+          ./build/run_tests
+
+      - name: Cross-Compile STM32F303K8 Firmware (CMake + Ninja)
+        run: |
+          cmake -B build -G Ninja
+          cmake --build build
+
+      - name: Upload Firmware Artifacts (.elf, .bin, .hex)
+        uses: actions/upload-artifact@v4
+        with:
+          name: stm32f303-freertos-firmware
+          path: |
+            build/*.elf
+            build/*.bin
+            build/*.hex

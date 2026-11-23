@@ -58,8 +58,8 @@ add_executable(${PROJECT_NAME}.elf
 
 target_include_directories(${PROJECT_NAME}.elf PRIVATE
     app
-    drivers/STM32F3_Drivers/CMSIS/CMSIS/Core/Include
-    drivers/STM32F3_Drivers/CMSIS/Device/ST/STM32F3xx/Include
+    drivers/STM32F3_Drivers/CMSIS_Core/CMSIS/Core/Include
+    drivers/STM32F3_Drivers/CMSIS_Device_F3/Include
     drivers/STM32F3_Drivers/STM32F3xx_HAL_Driver/Inc
     ${FREERTOS_DIR}/include
     ${FREERTOS_DIR}/portable/GCC/ARM_CM4F

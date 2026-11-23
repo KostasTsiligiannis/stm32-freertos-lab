@@ -1,21 +1,17 @@
 #include "stm32f3xx_hal.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "led_controller.h"
 
 static void GPIO_Init(void);
-static void vTaskLedFast(void *pvParameters);
-static void vTaskLedSlow(void *pvParameters);
+static void vTaskLedStatus(void *pvParameters);
 
 int main(void)
 {
     HAL_Init();
     GPIO_Init();
 
-    /* Δημιουργία 2 Tasks όπως στο πρώτο εργαστήριο του μαθήματος */
-    xTaskCreate(vTaskLedFast, "LED_Task1", 128, NULL, 2, NULL);
-    xTaskCreate(vTaskLedSlow, "LED_Task2", 128, NULL, 1, NULL);
-
-    /* Εκκίνηση του FreeRTOS Scheduler */
+    xTaskCreate(vTaskLedStatus, "LED_Status", 128, NULL, 2, NULL);
     vTaskStartScheduler();
 
     while (1)
@@ -23,22 +19,15 @@ int main(void)
     }
 }
 
-static void vTaskLedFast(void *pvParameters)
+static void vTaskLedStatus(void *pvParameters)
 {
     (void)pvParameters;
+    uint32_t delay_ms = LedController_GetBlinkPeriodMs(SYS_MODE_NORMAL);
+
     for (;;)
     {
         HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
-        vTaskDelay(pdMS_TO_TICKS(200));
-    }
-}
-
-static void vTaskLedSlow(void *pvParameters)
-{
-    (void)pvParameters;
-    for (;;)
-    {
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        vTaskDelay(pdMS_TO_TICKS(delay_ms));
     }
 }
 
@@ -47,12 +36,9 @@ static void GPIO_Init(void)
     __HAL_RCC_GPIOB_CLK_ENABLE();
 
     GPIO_InitTypeDef GPIO_InitStruct = {0};
-    GPIO_InitStruct.Pin = GPIO_PIN_3; /* LD3 Green LED στη Nucleo-F303K8 */
+    GPIO_InitStruct.Pin = GPIO_PIN_3;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
-
-/* Απαραίτητος ISR για να μετράει σωστά το HAL_Delay χωρίς να μπλέκει με το SysTick του FreeRTOS */
-void SysTick_Handler(void);

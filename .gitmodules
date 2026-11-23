@@ -1,0 +1,18 @@
+[submodule "third_party/FreeRTOS-Kernel"]
+	path = third_party/FreeRTOS-Kernel
+	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
+[submodule "drivers/STM32F3_Drivers/CMSIS/Device/ST/STM32F3xx"]
+	path = drivers/STM32F3_Drivers/CMSIS/Device/ST/STM32F3xx
+	url = https://github.com/STMicroelectronics/cmsis-device-f3.git
+[submodule "drivers/STM32F3_Drivers/STM32F3xx_HAL_Driver"]
+	path = drivers/STM32F3_Drivers/STM32F3xx_HAL_Driver
+	url = https://github.com/STMicroelectronics/stm32f3xx-hal-driver.git
+[submodule "third_party/Unity"]
+	path = third_party/Unity
+	url = https://github.com/ThrowTheSwitch/Unity.git
+[submodule "drivers/STM32F3_Drivers/CMSIS_Core"]
+	path = drivers/STM32F3_Drivers/CMSIS_Core
+	url = https://github.com/STMicroelectronics/cmsis-core.git
+[submodule "drivers/STM32F3_Drivers/CMSIS_Device_F3"]
+	path = drivers/STM32F3_Drivers/CMSIS_Device_F3
+	url = https://github.com/STMicroelectronics/cmsis-device-f3.git
