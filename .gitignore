@@ -6,6 +6,7 @@ cmake-build-*/
 *.map
 *.o
 *.d
+*.svd
 .vscode/
 .idea/
 .DS_Store
